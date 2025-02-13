@@ -32,10 +32,7 @@ module driver(
 logic [15:0] baudrate;
 
 // for UART transmit
-logic [8:0] uart_reg;
-logic shift;
-logic [4:0] bit_cnt;
-logic [11:0] baud_cnt; 
+logic [7:0] uart_reg;
 
 // mux for baudrate based off br_cfg
 always_comb begin
@@ -47,43 +44,11 @@ always_comb begin
     endcase
 end
 
-// flop recieved data into a UART register so it's ready to transmit
-// shift out LSB with UART 
 always_ff @(posedge clk, negedge rst) begin
-    if (!rst) begin
-        uart_reg <= '1;
-    end
-    else if (rda) begin
-        uart_reg <= {databus, 1'b0}; 
-    end
-    else if (shift) begin
-        uart_reg <= {1'b1, databus[8:1]};
+    if (rda) begin
+        uart_reg <= databus;
     end
 end
-
-// reg for bit_cnt
-always_ff @(posedge clk) begin
-    if (tbr) begin
-        bit_cnt = '0;
-    end
-    else if (bit_cnt < 4'd9 && shift) begin
-        bit_cnt = bit_cnt + 1;
-    end
-end
-
-// reg for baud_cnt
-always_ff @(posedge clk) begin
-    if (tbr | shift) begin
-        baud_cnt = '0;
-    end
-    else begin
-        baud_cnt = baud_cnt + 1;
-    end
-end
-
-// assign shift
-// what number should be check??
-//assign shift =
 
 ////// STATE MACHINE ///////
 typedef enum reg {BAUD_LOW, BAUD_HIGH, RECEIVE, TRANSMIT} state_t;
@@ -92,7 +57,7 @@ state_t state, next_state;
 // next state each cycle
 always_ff @(posedge clk, negedge rst) begin
 	if (!rst) begin
-		state <= IDLE;
+		state <= BAUD_LOW;
 	end
 	else begin
 		state <= nxt_state;
@@ -104,8 +69,6 @@ always_comb begin
     iocs = 0;
     iorw = 0;
     ioaddr = 0;
-    inc = 0;
-    shift = 0;
     next_state = state;
 
     case(state)
@@ -125,16 +88,13 @@ always_comb begin
         end
 
         RECEIVE : if (tbr) begin
+            iocs = 1;
             next_state = TRANSMIT;
         end
 
-        TRANSMIT : begin
-            iocs = 1; // using FSM signal for reg en this bad ???
-            databus = uart_reg[7:0];
-            if (bit_cnt == 4'd9 && rda) begin
-                iorw = 1;
-                next_state = RECEIVE;
-            end
+        TRANSMIT : if (rda) begin
+            iorw = 1;
+            next_state = RECEIVE;
         end
 
     endcase
