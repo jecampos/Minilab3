@@ -37,14 +37,14 @@ logic [7:0] uart_reg;
 // mux for baudrate based off br_cfg
 always_comb begin
     case(br_cfg)
-        2'b00 : baudrate = 16'd4800;
-        2'b01 : baudrate = 16'd9600;
-        2'b10 : baudrate = 16'd19200;
-        2'b11 : baudrate = 16'd38400;
+        2'b00 : baudrate = 16'd651; //651
+        2'b01 : baudrate = 16'd325; //325
+        2'b10 : baudrate = 16'd162; //162
+        2'b11 : baudrate = 16'd81; //81
     endcase
 end
 
-always_ff @(posedge clk, negedge rst) begin
+always_ff @(posedge clk) begin
     if (rda) begin
         uart_reg <= databus;
     end

@@ -31,6 +31,7 @@ initial begin
     @(negedge clk)
     rst_n = 0;
     
+    // signal 1
     rxd = 0;
     repeat (651) @(posedge clk);
     rxd = 1;
@@ -48,6 +49,50 @@ initial begin
     rxd = 1;
     repeat (651) @(posedge clk);
     rxd = 0;
+    repeat (651) @(posedge clk);
+    rxd = 1;
+    repeat (651) @(posedge clk);
+
+    // signal 2
+    rxd = 0;
+    repeat (651) @(posedge clk);
+    rxd = 1;
+    repeat (651) @(posedge clk);
+    rxd = 0;
+    repeat (651) @(posedge clk);
+    rxd = 1;
+    repeat (651) @(posedge clk);
+    rxd = 0;
+    repeat (651) @(posedge clk);
+    rxd = 1;
+    repeat (651) @(posedge clk);
+    rxd = 0;
+    repeat (651) @(posedge clk);
+    rxd = 1;
+    repeat (651) @(posedge clk);
+    rxd = 0;
+    repeat (651) @(posedge clk);
+    rxd = 1;
+    repeat (651) @(posedge clk);
+
+    // signal 3
+    rxd = 0;
+    repeat (651) @(posedge clk);
+    rxd = 0;
+    repeat (651) @(posedge clk);
+    rxd = 0;
+    repeat (651) @(posedge clk);
+    rxd = 1;
+    repeat (651) @(posedge clk);
+    rxd = 1;
+    repeat (651) @(posedge clk);
+    rxd = 0;
+    repeat (651) @(posedge clk);
+    rxd = 1;
+    repeat (651) @(posedge clk);
+    rxd = 1;
+    repeat (651) @(posedge clk);
+    rxd = 1;
     repeat (651) @(posedge clk);
     rxd = 1;
     repeat (651) @(posedge clk);
