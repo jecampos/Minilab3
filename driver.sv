@@ -51,7 +51,7 @@ always_ff @(posedge clk, negedge rst) begin
 end
 
 ////// STATE MACHINE ///////
-typedef enum reg {BAUD_LOW, BAUD_HIGH, RECEIVE, TRANSMIT} state_t;
+typedef enum reg [1:0] {BAUD_LOW, BAUD_HIGH, RECEIVE, TRANSMIT} state_t;
 state_t state, next_state;
 
 // next state each cycle
@@ -60,9 +60,14 @@ always_ff @(posedge clk, negedge rst) begin
 		state <= BAUD_LOW;
 	end
 	else begin
-		state <= nxt_state;
+		state <= next_state;
 	end
 end
+
+assign databus = (state == BAUD_LOW) ?      baudrate[7:0] :
+                 (state == BAUD_HIGH) ?    baudrate[15:8] :
+                 (state == RECEIVE) ?           uart_reg  :
+                                                      8'bz; 
 
 // next state transistion logic
 always_comb begin
@@ -74,17 +79,12 @@ always_comb begin
     case(state)
         BAUD_LOW : begin
             ioaddr = 2'b10;
-            databus = baudrate[7:0];
             next_state = BAUD_HIGH;
         end
 
         BAUD_HIGH : begin
             ioaddr = 2'b11;
-            databus = baudrate[15:8];
-            if (rda) begin
-                iorw = 1;
-                next_state = RECEIVE;
-            end
+            next_state = TRANSMIT;
         end
 
         RECEIVE : if (tbr) begin
