@@ -19,7 +19,7 @@ always_ff@(posedge clk, negedge rst)begin
 end
 
 always_ff@(posedge clk, negedge rst) begin
-    if(~rst) begin
+    if(!rst) begin
         count <= 2;
         enable <= 0;
     end

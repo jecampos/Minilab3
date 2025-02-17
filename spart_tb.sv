@@ -25,11 +25,13 @@ assign txd = gpio[3];
 initial begin
     clk = 0;
     rst_n = 1;
-    rxd = 0;
+    rxd = 1;
     br_cfg = 0;
     @(posedge clk)
     @(negedge clk)
     rst_n = 0;
+
+    repeat (7000) @(posedge clk);
     
     // signal 1
     rxd = 0;
@@ -53,6 +55,8 @@ initial begin
     rxd = 1;
     repeat (651) @(posedge clk);
 
+    repeat (3000) @(posedge clk);
+
     // signal 2
     rxd = 0;
     repeat (651) @(posedge clk);
@@ -74,6 +78,8 @@ initial begin
     repeat (651) @(posedge clk);
     rxd = 1;
     repeat (651) @(posedge clk);
+
+    repeat (7000) @(posedge clk);
 
     // signal 3
     rxd = 0;
