@@ -66,7 +66,7 @@ module spart(
  end
 
 always_ff@(posedge clk, negedge rst) begin
-    if(~rst) begin
+    if(!rst) begin
         rda <= 0;
         recieve <= 9'b1;
         r_cnt <= 0;

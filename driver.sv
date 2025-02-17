@@ -37,10 +37,10 @@ logic [7:0] uart_reg;
 // mux for baudrate based off br_cfg
 always_comb begin
     case(br_cfg)
-        2'b00 : baudrate = 16'd651; //651
-        2'b01 : baudrate = 16'd325; //325
-        2'b10 : baudrate = 16'd162; //162
-        2'b11 : baudrate = 16'd81; //81
+        2'b00 : baudrate = 16'd10416;
+        2'b01 : baudrate = 16'd5208;
+        2'b10 : baudrate = 16'd2604;
+        2'b11 : baudrate = 16'd1302;
     endcase
 end
 
