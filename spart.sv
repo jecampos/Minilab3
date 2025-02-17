@@ -36,26 +36,31 @@ module spart(
  logic [4:0] t_cnt;
  logic [4:0] r_cnt;
  logic recieve_done;
+ logic t_start;
 
  assign txd = transmit[0];
  assign databus = ((~|ioaddr) && iorw && rda) ? recieve[7:0] : 8'bz;
 
  always_ff@(posedge clk, negedge rst) begin
     if (!rst) begin
-        transmit <= '1;
+        transmit <= 9'b1;
         t_cnt <= 0;
         tbr <= 1;
+        t_start <= 0;
     end
     else if(iocs && (!iorw) && (~|ioaddr)) begin
         t_cnt <= 0;
         tbr <= 0;
         transmit <= {databus, 1'b0};
+        t_start <= 1;
     end
-    else if(en) begin
+    else if(en && t_start) begin
         t_cnt <= t_cnt + 1;
         transmit <= {1'b1, transmit[8:1]};
-        if (t_cnt == 4'd9)
+        if (t_cnt == 4'd9) begin
             tbr <= 1;
+            t_start <= 0;
+        end
     end
  end
 
