@@ -35,7 +35,6 @@ module spart(
  logic [8:0] recieve;
  logic [4:0] t_cnt;
  logic [4:0] r_cnt;
- logic recieve_done;
  logic t_start;
  logic r_start;
 
@@ -77,7 +76,6 @@ always_ff@(posedge clk, negedge rst) begin
         if (!r_start && !rxd) begin
             rda <= 0;
             r_cnt <= 1;
-            recieve_done <= 0;
             r_start <= 1;
         end
         else
